@@ -3,12 +3,25 @@ package main
 import (
 	"net/http"
 	"github.com/gorilla/mux"
-	"github.com/gorilla/handlers"
 	h "coconut.com/handlers"
+	"github.com/gorilla/handlers"
 	"os"
+	"github.com/kabukky/httpscerts"
+	"log"
 )
 
 func main() {
+	// Generate cert
+	// Check if the cert files are available.
+	err := httpscerts.Check("cert.pem", "key.pem")
+	// If they are not available, generate new ones.
+	if err != nil {
+		err = httpscerts.Generate("cert.pem", "key.pem", "127.0.0.1:8081")
+		if err != nil {
+			log.Fatal("Error: Couldn't create https certs.")
+		}
+	}
+	
 	// Here we are instantiating the gorilla/mux router
 	r := mux.NewRouter()
 
@@ -22,5 +35,6 @@ func main() {
 	r.Handle("/upload", h.UploadHandler).Methods("POST")
 
 	// Our application will run on port 4000. Here we declare the port and pass in our router.
-	http.ListenAndServe(":4000", handlers.LoggingHandler(os.Stdout, r))
+	http.ListenAndServeTLS(":8443", "cert.pem", "key.pem", handlers.LoggingHandler(os.Stdout, r))
+	// http.ListenAndServe(":4000", handlers.LoggingHandler(os.Stdout, r))
 }
