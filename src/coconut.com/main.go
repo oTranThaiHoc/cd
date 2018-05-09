@@ -21,7 +21,7 @@ func main() {
 			log.Fatal("Error: Couldn't create https certs.")
 		}
 	}
-	
+
 	// Here we are instantiating the gorilla/mux router
 	r := mux.NewRouter()
 
@@ -34,7 +34,7 @@ func main() {
 	r.Handle("/list", h.PayloadsHandler).Methods("GET")
 	r.Handle("/upload", h.UploadHandler).Methods("POST")
 
-	// Our application will run on port 4000. Here we declare the port and pass in our router.
+	// Our application will run on port 8443. Here we declare the port and pass in our router.
 	http.ListenAndServeTLS(":8443", "cert.pem", "key.pem", handlers.LoggingHandler(os.Stdout, r))
-	// http.ListenAndServe(":4000", handlers.LoggingHandler(os.Stdout, r))
+	http.ListenAndServe(":8443", handlers.LoggingHandler(os.Stdout, r))
 }
