@@ -54,6 +54,7 @@ var PayloadsHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reque
 
 	p, _ := json.Marshal(apps)
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(p))
 })

@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0ccd74df-a601-4dca-85ed-0e63665f3372" name="Default" comment="" />
+    <list default="true" id="0ccd74df-a601-4dca-85ed-0e63665f3372" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/src/coconut.com/handlers/list.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/coconut.com/handlers/list.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/coconut.com/utils/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/coconut.com/utils/utils.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/index.html" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -35,11 +39,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="list.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="list.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/coconut.com/handlers/list.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="418">
-              <caret line="41" column="39" selection-start-line="41" selection-start-column="39" selection-end-line="41" selection-end-column="39" />
+            <state relative-caret-position="833">
+              <caret line="49" column="9" lean-forward="true" selection-start-line="49" selection-start-column="9" selection-end-line="49" selection-end-column="9" />
               <folding>
                 <element signature="e#18#57#0" expanded="true" />
               </folding>
@@ -56,11 +60,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="utils.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="utils.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/coconut.com/utils/utils.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="85">
-              <caret line="5" column="30" selection-start-line="5" selection-start-column="30" selection-end-line="5" selection-end-column="30" />
+              <caret line="5" column="39" selection-start-line="5" selection-start-column="39" selection-end-line="5" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -80,6 +84,9 @@
     </findStrings>
   </component>
   <component name="GOROOT" path="/usr/local/Cellar/go/1.10.1/libexec" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="GoLibraries">
     <option name="urls">
       <list>
@@ -91,11 +98,11 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/coconut.com/utils/utils.go" />
         <option value="$PROJECT_DIR$/src/coconut.com/main.go" />
         <option value="$PROJECT_DIR$/src/coconut.com/handlers/upload.go" />
         <option value="$PROJECT_DIR$/src/coconut.com/payload/payload.go" />
         <option value="$PROJECT_DIR$/src/coconut.com/handlers/list.go" />
+        <option value="$PROJECT_DIR$/src/coconut.com/utils/utils.go" />
       </list>
     </option>
   </component>
@@ -113,6 +120,7 @@
     <option name="width" value="1280" />
     <option name="height" value="732" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -199,8 +207,8 @@
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
       <window_info anchor="right" id="Database" />
       <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32913387" />
-      <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32913387" />
+      <window_info anchor="bottom" id="Version Control" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
@@ -221,13 +229,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/coconut.com/utils/utils.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="30" selection-start-line="5" selection-start-column="30" selection-end-line="5" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/Cellar/go/1.10.1/libexec/src/net/http/request.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="557">
@@ -285,11 +286,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/coconut.com/handlers/list.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="41" column="39" selection-start-line="41" selection-start-column="39" selection-end-line="41" selection-end-column="39" />
+        <state relative-caret-position="833">
+          <caret line="49" column="9" lean-forward="true" selection-start-line="49" selection-start-column="9" selection-end-line="49" selection-end-column="9" />
           <folding>
             <element signature="e#18#57#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/coconut.com/utils/utils.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="39" selection-start-line="5" selection-start-column="39" selection-end-line="5" selection-end-column="39" />
         </state>
       </provider>
     </entry>

@@ -1,10 +1,37 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>We R VR</title>
-</head>
-<body>
-    <h1>Welcome to We R VR</h1>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <title>Release versions!</title>
+  </head>
+  <body>
+    
+    <h1>Release versions!</h1>
+    <div id="projects-list"></div>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+      (function() {
+        $.getJSON( "https://abb7085c.ngrok.io/list", function( data ) {
+          $.each( data, function( i, project_item ) {
+            $( "<div/>", {
+              "id": ("project-" + i),
+              "class": "project-item",
+              html: ("<h4>" + project_item.project + "</h4>"),
+            }).appendTo( "#projects-list" );
+
+            let payloads_list = [];
+            $.each(project_item.payloads, function(j, payload_item) {
+              payloads_list.push( "<li id='" + j + "'>" + "<a href='" + payload_item.url + "'>" + payload_item.title + "</a></li>" );
+            })
+
+            $( "<ul/>", {
+              "class": "payloads-list",
+              html: payloads_list.join( "" )
+            }).appendTo( "#project-" + i );
+          });
+        });
+      })();
+    </script>
+  </body>
 </html>
