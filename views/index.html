@@ -12,7 +12,7 @@
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script>
       (function() {
-        $.getJSON( "https://abb7085c.ngrok.io/list", function( data ) {
+        $.getJSON( "http://192.168.5.29:4000/list", function( data ) {
           $.each( data, function( i, project_item ) {
             $( "<div/>", {
               "id": ("project-" + i),

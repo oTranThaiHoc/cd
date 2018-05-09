@@ -3,7 +3,7 @@ package utils
 import "os"
 
 const (
-	Domain = "https://abb7085c.ngrok.io"
+	Domain = "http://192.168.5.29:4000"
 )
 
 func CreateDirIfNotExist(dir string) {
