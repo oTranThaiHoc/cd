@@ -1,0 +1,16 @@
+[
+  {
+    "project":"EXAMPLE",
+    "source_dir":"/Users/nguyen.van.hung/Desktop/Example/",
+    "targets": [
+      "Example"
+    ]
+  },
+  {
+    "project":"PHONE_VERIFICATION",
+    "source_dir":"/Users/nguyen.van.hung/Desktop/PhoneVerificationController/",
+    "targets": [
+      "Example"
+    ]
+  }
+]
