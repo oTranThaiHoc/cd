@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"coconut.com/config"
 	"coconut.com/worker"
+	"github.com/gorilla/mux"
+	"encoding/json"
 )
 
 var BuildHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -25,5 +27,43 @@ var BuildHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 		}
 	}
 	w.WriteHeader(http.StatusOK)
+})
+
+var BuildConfigHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	key, ok := mux.Vars(r)["key"]
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	if key == "list" {
+		// return all config
+		cfg, err := json.Marshal(config.BuildConfigs)
+		if err == nil {
+			w.Write(cfg)
+		}
+		return
+	}
+	if key == "projects" {
+		// return list project
+		projects := make([]string, len(config.BuildConfigs))
+		for i, c := range config.BuildConfigs {
+			projects[i] = c.Project
+		}
+		l, err := json.Marshal(projects)
+		if err == nil {
+			w.Write(l)
+		}
+	} else {
+		// return list target
+		for _, c := range config.BuildConfigs {
+			if c.Project == key {
+				l, err := json.Marshal(c.Target)
+				if err == nil {
+					w.Write(l)
+				}
+				return
+			}
+		}
+	}
 })
 

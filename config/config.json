@@ -1,16 +1,22 @@
 [
   {
-    "project":"EXAMPLE",
-    "source_dir":"/Users/nguyen.van.hung/Desktop/Example/",
+    "project":"SHUEISHA",
+    "source_dir":"/Data/Projects/Publis_iOS",
     "targets": [
-      "Example"
+      "Hanadan",
+      "JBSV3",
+      "SHJ2",
+      "SHM3",
+      "NARUTO",
+      "ONEPIECE"
     ]
   },
   {
-    "project":"PHONE_VERIFICATION",
-    "source_dir":"/Users/nguyen.van.hung/Desktop/PhoneVerificationController/",
+    "project":"SUNDAY",
+    "source_dir":"/Data/Projects/Publis_iOS",
     "targets": [
-      "Example"
+      "PUBLUS",
+      "PUBLUS STAGING"
     ]
   }
 ]

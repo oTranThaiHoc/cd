@@ -3,7 +3,7 @@ package utils
 import "os"
 
 const (
-	Domain = "http://192.168.5.29:4000"
+	Domain = "https://deploygate.localtunnel.me"
 )
 
 func CreateDirIfNotExist(dir string) {

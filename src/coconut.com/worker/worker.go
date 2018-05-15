@@ -22,7 +22,7 @@ func init() {
 		for {
 			select {
 			case job := <- JobQueue: {
-				cmd := exec.Command("/bin/sh", "/Users/nguyen.van.hung/Workspaces/ci/scripts/remote_deploy.sh", job.Cfg.Path, job.Target, job.Title)
+				cmd := exec.Command("/bin/sh", "/Users/nguyen.van.hung/workspace/ci/scripts/remote_deploy.sh", job.Cfg.Path, job.Target, job.Title)
 				_, err := cmd.Output()
 				if err != nil {
 					log.Fatal(err)

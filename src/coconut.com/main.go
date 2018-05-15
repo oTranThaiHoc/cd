@@ -21,6 +21,7 @@ func main() {
 	r.Handle("/list", h.PayloadsHandler).Methods("GET")
 	r.Handle("/upload", h.UploadHandler).Methods("POST")
 	r.Handle("/event_handler", h.EventHandler).Methods("POST")
+	r.Handle("/build_configs/{key}", h.BuildConfigHandler).Methods("GET")
 	r.Handle("/build", h.BuildHandler).Methods("POST")
 
 	// Our application will run on port 8443. Here we declare the port and pass in our router.
