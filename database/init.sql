@@ -1,0 +1,5 @@
+DROP DATABASE deploygate;
+CREATE DATABASE deploygate;
+DROP USER cc;
+CREATE USER cc WITH PASSWORD 'cc' IN ROLE postgres;
+GRANT ALL PRIVILEGES ON DATABASE deploygate TO cc;

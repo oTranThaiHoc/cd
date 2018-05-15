@@ -1,9 +1,7 @@
 package utils
 
-import "os"
-
-const (
-	Domain = "https://deploygate.localtunnel.me"
+import (
+	"os"
 )
 
 func CreateDirIfNotExist(dir string) {

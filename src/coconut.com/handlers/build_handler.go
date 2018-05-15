@@ -7,14 +7,97 @@ import (
 	"coconut.com/worker"
 	"github.com/gorilla/mux"
 	"encoding/json"
+	"log"
+	"coconut.com/payload"
+	"io/ioutil"
+	"os"
+	"coconut.com/db"
 )
 
+var PayloadsHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	var payloads []payload.List
+	for _, buildOption := range config.BuildOptions {
+		for _, target := range buildOption.Targets {
+			ps, err := db.LoadPayloadList(target)
+			if err == nil {
+				p := payload.List{
+					Target:target,
+					Payloads:ps,
+				}
+				payloads = append(payloads, p)
+			}
+		}
+	}
+	payloadJson, _ := json.Marshal(payloads)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(payloadJson)
+})
+
+var PayloadsHandlers = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
+	projects, err := enumerateDirectory("./payloads")
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	fmt.Println(projects)
+
+	var apps []payload.List
+	for _, project := range projects {
+		if !project.IsDir() {
+			continue
+		}
+		builds, err := enumerateDirectory(fmt.Sprintf("./payloads/%v", project.Name()))
+		if err != nil {
+			continue
+		}
+		var appPayloads []payload.Payload
+		for _, build := range builds {
+			if !build.IsDir() {
+				continue
+			}
+			appJsonPath := fmt.Sprintf("./payloads/%v/%v/app.json", project.Name(), build.Name())
+			raw, err := ioutil.ReadFile(appJsonPath)
+			if err != nil {
+				continue
+			}
+			var app payload.Payload
+			err = json.Unmarshal(raw, &app)
+			if err == nil {
+				appPayloads = append(appPayloads, app)
+			}
+		}
+		appPayload := payload.List {
+			Target:project.Name(),
+			Payloads:appPayloads,
+		}
+
+		apps = append(apps, appPayload)
+	}
+
+	p, _ := json.Marshal(apps)
+
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(p)
+})
+
+func enumerateDirectory(dirPath string) ([]os.FileInfo, error) {
+	files, err := ioutil.ReadDir(dirPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return files, err
+}
+
 var BuildHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf("build command: %v\n", r)
 	project := r.PostFormValue("project")
 	target := r.PostFormValue("target")
 	title := r.PostFormValue("title")
 
-	for _, cfg := range config.BuildConfigs {
+	for _, cfg := range config.BuildOptions {
 		if cfg.Project == project {
 			fmt.Printf("Run build on project %v, target %v, title %v\n", project, target, title)
 			j := worker.Job{
@@ -35,9 +118,11 @@ var BuildConfigHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Re
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
 	if key == "list" {
 		// return all config
-		cfg, err := json.Marshal(config.BuildConfigs)
+		cfg, err := json.Marshal(config.BuildOptions)
 		if err == nil {
 			w.Write(cfg)
 		}
@@ -45,8 +130,8 @@ var BuildConfigHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Re
 	}
 	if key == "projects" {
 		// return list project
-		projects := make([]string, len(config.BuildConfigs))
-		for i, c := range config.BuildConfigs {
+		projects := make([]string, len(config.BuildOptions))
+		for i, c := range config.BuildOptions {
 			projects[i] = c.Project
 		}
 		l, err := json.Marshal(projects)
@@ -55,9 +140,9 @@ var BuildConfigHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Re
 		}
 	} else {
 		// return list target
-		for _, c := range config.BuildConfigs {
+		for _, c := range config.BuildOptions {
 			if c.Project == key {
-				l, err := json.Marshal(c.Target)
+				l, err := json.Marshal(c.Targets)
 				if err == nil {
 					w.Write(l)
 				}

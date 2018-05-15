@@ -1,0 +1,9 @@
+# database
+pg_host: localhost
+pg_port: 5432
+pg_database: deploygate
+pg_user: cc
+pg_password: cc
+
+# host
+web_endpoint: https://deploygate.localtunnel.me

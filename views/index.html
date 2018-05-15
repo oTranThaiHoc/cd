@@ -1,37 +1,110 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <title>Release versions!</title>
-  </head>
-  <body>
-    
-    <h1>Release versions!</h1>
-    <div id="projects-list"></div>
+</head>
+<body>
+<h1>Releases</h1>
+<div id="projects-list"></div>
 
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script>
-      (function() {
-        $.getJSON( "http://192.168.5.29:4000/list", function( data ) {
-          $.each( data, function( i, project_item ) {
-            $( "<div/>", {
-              "id": ("project-" + i),
-              "class": "project-item",
-              html: ("<h4>" + project_item.project + "</h4>"),
-            }).appendTo( "#projects-list" );
+<hr/>
 
-            let payloads_list = [];
-            $.each(project_item.payloads, function(j, payload_item) {
-              payloads_list.push( "<li id='" + j + "'>" + "<a href='" + payload_item.url + "'>" + payload_item.title + "</a></li>" );
-            })
+<h1>Add release</h1>
+<form id="request-release-form">
+    <select
+            name="projects-select"
+            id="projects-select"
+    ></select>
+    <br/><br/>
 
-            $( "<ul/>", {
-              "class": "payloads-list",
-              html: payloads_list.join( "" )
-            }).appendTo( "#project-" + i );
-          });
+    <select
+            name="targets-select"
+            id="targets-select"
+    ></select>
+    <br/><br/>
+
+    <input type="text" name="title">
+    <br/><br/>
+
+    <input
+            type="submit"
+    >
+    <br/><br/>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script>
+    (function() {
+        var select_releases;
+
+        $.getJSON( "https://deploygate.localtunnel.me/list", function( data ) {
+            $.each( data, function( i, project_item ) {
+                $( "<div/>", {
+                    "id": ("project-" + i),
+                    "class": "project-item",
+                    html: ("<h4>" + project_item.target + "</h4>"),
+                }).appendTo( "#projects-list" );
+
+                let payloads_list = [];
+                $.each(project_item.payloads, function(j, payload_item) {
+                    payloads_list.push( "<li id='" + j + "'>" + "<a href='" + payload_item.url + "'>" + payload_item.title + "</a></li>" );
+                })
+
+                $( "<ul/>", {
+                    "class": "payloads-list",
+                    html: payloads_list.join( "" )
+                }).appendTo( "#project-" + i );
+            });
         });
-      })();
-    </script>
-  </body>
+
+        $.getJSON("https://deploygate.localtunnel.me/build_configs/list", function( data ) {
+            select_releases = data;
+            $.each( data, function( index, project_item ) {
+                $("<option/>", {
+                    "value": project_item.project,
+                    html: project_item.project,
+                }).appendTo( "#projects-select");
+            });
+
+            $.each( data[0].targets, function( index, targe_item ) {
+                $( "<option/>", {
+                    "value": targe_item,
+                    html: targe_item,
+                }).appendTo("#targets-select");
+            });
+        });
+
+        $('#request-release-form').on('submit', function(e) {
+            e.preventDefault();
+            let project_select = $('#projects-select').val();
+            let target_select = $('#targets-select').val();
+            let title = $('input[name="title"]').val();
+            $.ajax({
+                type: "POST",
+                url: 'https://deploygate.localtunnel.me/build',
+                data: { project: project_select, target: target_select, title: title },
+                success: function(data) {
+                    console.log(data);
+                },
+            });
+        });
+
+        $('#projects-select').change(function() {
+            let selectedProject = $('#projects-select option:selected').val();
+            let targets = select_releases.filter(function(project_item) {
+                return project_item.project == selectedProject;
+            })[0].targets;
+
+            $('#targets-select').html('');
+            $.each(targets, function( index, targe_item ) {
+                $( "<option/>", {
+                    "value": targe_item,
+                    html: targe_item,
+                }).appendTo("#targets-select");
+            });
+        });
+    })();
+</script>
+</body>
 </html>

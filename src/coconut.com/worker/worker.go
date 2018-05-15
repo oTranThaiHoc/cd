@@ -8,7 +8,7 @@ import (
 )
 
 type Job struct {
-	Cfg config.BuildConfig
+	Cfg config.BuildOption
 	Target string
 	Title string
 }

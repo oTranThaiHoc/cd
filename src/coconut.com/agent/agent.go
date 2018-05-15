@@ -1,0 +1,74 @@
+package agent
+
+import (
+	"github.com/spf13/cobra"
+	"runtime"
+	"os"
+	"github.com/jackc/pgx"
+	"log"
+	"coconut.com/config/pgconf"
+	"github.com/gorilla/mux"
+	"net/http"
+	"github.com/gorilla/handlers"
+	h "coconut.com/handlers"
+	"coconut.com/db"
+	"coconut.com/config"
+)
+
+var Cmd = &cobra.Command{
+	Use:   "deploy",
+	Short: "deploy sever",
+	Run:   command,
+}
+
+func command(cmd *cobra.Command, args []string) {
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
+	// database
+	pgconf.SetFlags(cmd)
+	conn, err := newPgPool(cmd)
+	if err != nil {
+		log.Fatalf("cannot connect database %v", err)
+		os.Exit(1)
+	}
+	db.Setup(conn)
+
+	// load build options
+	projects, err := db.LoadBuildOptions()
+	if err != nil {
+		log.Fatalf("cannot connect database %v", err)
+		os.Exit(1)
+	}
+	config.BuildOptions = projects
+
+	// Here we are instantiating the gorilla/mux router
+	r := mux.NewRouter()
+
+	// On the default page we will simply serve our static index page.
+	r.Handle("/", http.FileServer(http.Dir("./views/")))
+	// We will setup our server so we can serve static assest like images, css from the /static/{file} route
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
+	r.PathPrefix("/payloads/").Handler(http.StripPrefix("/payloads/", http.FileServer(http.Dir("./payloads/"))))
+
+	r.Handle("/list", h.PayloadsHandler).Methods("GET")
+	r.Handle("/upload", h.UploadHandler).Methods("POST")
+	r.Handle("/event_handler", h.EventHandler).Methods("POST")
+	r.Handle("/build_configs/{key}", h.BuildConfigHandler).Methods("GET")
+	r.Handle("/build", h.BuildHandler).Methods("POST")
+
+	// Our application will run on port 8443. Here we declare the port and pass in our router.
+	http.ListenAndServe(":4000", handlers.LoggingHandler(os.Stdout, r))
+}
+
+func newPgPool(cmd *cobra.Command) (pg *pgx.ConnPool, err error) {
+	cfg := pgconf.Config(cmd)
+	cfg.AfterConnect = func(conn *pgx.Conn) error {
+		db.PrepareStmt(conn)
+		return nil
+	}
+	pg, err = pgx.NewConnPool(cfg)
+	if err != nil {
+		return nil, err
+	}
+	return
+}
