@@ -11,5 +11,6 @@ CREATE TABLE IF NOT EXISTS builds (
   id              SERIAL PRIMARY KEY,
   title           VARCHAR(128) NOT NULL,
   target          VARCHAR(128) NOT NULL,
-  manifest_url    VARCHAR(256) NOT NULL
+  manifest_url    VARCHAR(256) NOT NULL,
+  path            VARCHAR(1024) NOT NULL -- path to ipa directory
 );

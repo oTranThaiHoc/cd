@@ -152,3 +152,17 @@ var BuildConfigHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Re
 	}
 })
 
+var RemoveBuildHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	manifestUrl := r.PostFormValue("manifest_url")
+	path, err := db.FindBuild(manifestUrl)
+	if err != nil {
+		log.Printf("can not find build with manifest: %v\n", manifestUrl)
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	err = db.RemoveBuild(manifestUrl)
+	if err == nil {
+		// remove physical directory
+		os.RemoveAll(path)
+	}
+})

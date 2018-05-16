@@ -52,7 +52,7 @@ var UploadHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 
 	// insert to db
 	// title, manifestUrl
-	err = db.InsertNewBuild(title, targetName, manifestUrl)
+	err = db.InsertNewBuild(title, targetName, manifestUrl, d)
 	if err != nil {
 		log.Fatal(err)
 	}

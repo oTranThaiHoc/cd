@@ -15,9 +15,13 @@ var (
 const (
 	selectBuildSQL = `SELECT title, manifest_url FROM builds WHERE target=$1;`
 
-	addBuildSQL = `INSERT INTO builds(title, target, manifest_url) VALUES($1, $2, $3) RETURNING id;`
+	addBuildSQL = `INSERT INTO builds(title, target, manifest_url, path) VALUES($1, $2, $3, $4) RETURNING id;`
 
 	selectProjectSQL = `SELECT * FROM projects;`
+
+	removeBuildSQL = `DELETE FROM builds WHERE manifest_url=$1;`
+
+	findBuildPathSQL = `SELECT path FROM builds WHERE manifest_url=$1;`
 )
 
 func Setup(connPool *pgx.ConnPool) {
@@ -28,13 +32,26 @@ func PrepareStmt(conn *pgx.Conn) {
 	utils.MustPrepare(conn, "selectBuildSQL", selectBuildSQL)
 	utils.MustPrepare(conn, "addBuildSQL", addBuildSQL)
 	utils.MustPrepare(conn, "selectProjectSQL", selectProjectSQL)
+	utils.MustPrepare(conn, "removeBuildSQL", removeBuildSQL)
+	utils.MustPrepare(conn, "findBuildPathSQL", findBuildPathSQL)
 }
 
-func InsertNewBuild(title string, target string, manifestUrl string) error {
-	err := pool.QueryRow(addBuildSQL, title, target, manifestUrl).Scan(nil)
+func InsertNewBuild(title string, target string, manifestUrl string, path string) error {
+	err := pool.QueryRow(addBuildSQL, title, target, manifestUrl, path).Scan(nil)
 	if err != nil {
 		log.Fatalf("inser new build error: %v - %v\n", title, err)
 	}
+	return err
+}
+
+func FindBuild(manifestUrl string) (string, error) {
+	var path string
+	err := pool.QueryRow(findBuildPathSQL, manifestUrl).Scan(&path)
+	return path, err
+}
+
+func RemoveBuild(manifestUrl string) error {
+	_, err := pool.Exec(removeBuildSQL, manifestUrl)
 	return err
 }
 
