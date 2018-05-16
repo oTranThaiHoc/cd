@@ -9,10 +9,10 @@ import (
 	"coconut.com/config/pgconf"
 	"github.com/gorilla/mux"
 	"net/http"
-	"github.com/gorilla/handlers"
 	h "coconut.com/handlers"
 	"coconut.com/db"
 	"coconut.com/config"
+	"github.com/gorilla/handlers"
 )
 
 var Cmd = &cobra.Command{
@@ -20,6 +20,10 @@ var Cmd = &cobra.Command{
 	Short: "deploy sever",
 	Run:   command,
 }
+
+var faviconHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "./static/favicon.ico")
+})
 
 func command(cmd *cobra.Command, args []string) {
 	runtime.GOMAXPROCS(runtime.NumCPU())
@@ -50,6 +54,8 @@ func command(cmd *cobra.Command, args []string) {
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
 	r.PathPrefix("/payloads/").Handler(http.StripPrefix("/payloads/", http.FileServer(http.Dir("./payloads/"))))
 
+	r.Handle("/favicon.icon", faviconHandler).Methods("GET")
+
 	r.Handle("/list", h.PayloadsHandler).Methods("GET")
 	r.Handle("/upload", h.UploadHandler).Methods("POST")
 	r.Handle("/event_handler", h.EventHandler).Methods("POST")
@@ -58,7 +64,8 @@ func command(cmd *cobra.Command, args []string) {
 	r.Handle("/build/remove", h.RemoveBuildHandler).Methods("POST")
 
 	// Our application will run on port 8443. Here we declare the port and pass in our router.
-	http.ListenAndServe(":4000", handlers.LoggingHandler(os.Stdout, r))
+	//http.ListenAndServe(":4000", handlers.LoggingHandler(os.Stdout, r))
+	http.ListenAndServeTLS(":4000", "cert.pem", "key.pem", handlers.LoggingHandler(os.Stdout, r))
 }
 
 func newPgPool(cmd *cobra.Command) (pg *pgx.ConnPool, err error) {
