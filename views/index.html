@@ -24,7 +24,7 @@
     ></select>
     <br/><br/>
 
-    <input type="text" name="title">
+    <input type="text" name="title" placeholder="Ticket number">
     <br/><br/>
 
     <input
@@ -35,6 +35,19 @@
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script>
+    function deleteBuild(title, url) {
+        let r = confirm("Are you sure you want to delete " + title + "?");
+        if (r == true) {
+            $.ajax({
+                type: "POST",
+                url: 'https://deploygate.localtunnel.me/build/remove',
+                data: { manifest_url: url },
+                success: function(data) {
+                    location.reload();
+                },
+            });
+        }
+    }
     (function() {
         var select_releases;
 
@@ -48,8 +61,13 @@
 
                 let payloads_list = [];
                 $.each(project_item.payloads, function(j, payload_item) {
-                    payloads_list.push( "<li id='" + j + "'>" + "<a href='" + payload_item.url + "'>" + payload_item.title + "</a></li>" );
-                })
+                    let item_view = "<li id='" + j + "'>" +
+                            "<button type=\"button\" name=\"delete_btn\" onclick=" + "\"deleteBuild('" + payload_item.title + "','" + payload_item.url + "')\"" + ">Delete</button>&ensp;" +
+                            "<a href='" + payload_item.url + "'>" + payload_item.title + "</a>" +
+                            "</li>"
+                    console.debug(item_view);
+                    payloads_list.push(item_view);
+                });
 
                 $( "<ul/>", {
                     "class": "payloads-list",

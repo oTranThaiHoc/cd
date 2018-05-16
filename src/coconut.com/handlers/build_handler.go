@@ -109,6 +109,7 @@ var BuildHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 			break
 		}
 	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 })
 
@@ -153,6 +154,7 @@ var BuildConfigHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Re
 })
 
 var RemoveBuildHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	manifestUrl := r.PostFormValue("manifest_url")
 	path, err := db.FindBuild(manifestUrl)
 	if err != nil {
