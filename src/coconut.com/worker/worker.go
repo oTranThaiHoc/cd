@@ -25,7 +25,7 @@ func init() {
 				cmd := exec.Command("/bin/sh", "/Users/nguyen.van.hung/workspace/ci/scripts/remote_deploy.sh", job.Cfg.Path, job.Target, job.Title)
 				_, err := cmd.Output()
 				if err != nil {
-					log.Fatal(err)
+					log.Printf("Build target %v with title %v failed: %v\n", job.Target, job.Title, err)
 				}
 			}
 			default:

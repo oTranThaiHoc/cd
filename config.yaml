@@ -6,4 +6,4 @@ pg_user: cc
 pg_password: cc
 
 # host
-web_endpoint: https://deploygate.localtunnel.me
+web_endpoint: https://ipa.haipq.com

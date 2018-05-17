@@ -64,8 +64,8 @@ func command(cmd *cobra.Command, args []string) {
 	r.Handle("/build/remove", h.RemoveBuildHandler).Methods("POST")
 
 	// Our application will run on port 8443. Here we declare the port and pass in our router.
-	//http.ListenAndServe(":4000", handlers.LoggingHandler(os.Stdout, r))
-	http.ListenAndServeTLS(":4000", "cert.pem", "key.pem", handlers.LoggingHandler(os.Stdout, r))
+	http.ListenAndServe(":4000", handlers.LoggingHandler(os.Stdout, r))
+	//http.ListenAndServeTLS(":4000", "cert.pem", "key.pem", handlers.LoggingHandler(os.Stdout, r))
 }
 
 func newPgPool(cmd *cobra.Command) (pg *pgx.ConnPool, err error) {

@@ -40,7 +40,7 @@
         if (r == true) {
             $.ajax({
                 type: "POST",
-                url: 'https://deploygate.localtunnel.me/build/remove',
+                url: 'https://192.168.5.29:4000/build/remove',
                 data: { manifest_url: url },
                 success: function(data) {
                     location.reload();
@@ -51,7 +51,7 @@
     (function() {
         var select_releases;
 
-        $.getJSON( "https://deploygate.localtunnel.me/list", function( data ) {
+        $.getJSON( "https://192.168.5.29:4000/list", function( data ) {
             $.each( data, function( i, project_item ) {
                 $( "<div/>", {
                     "id": ("project-" + i),
@@ -76,7 +76,7 @@
             });
         });
 
-        $.getJSON("https://deploygate.localtunnel.me/build_configs/list", function( data ) {
+        $.getJSON("https://192.168.5.29:4000/build_configs/list", function( data ) {
             select_releases = data;
             $.each( data, function( index, project_item ) {
                 $("<option/>", {
@@ -100,7 +100,7 @@
             let title = $('input[name="title"]').val();
             $.ajax({
                 type: "POST",
-                url: 'https://deploygate.localtunnel.me/build',
+                url: 'https://192.168.5.29:4000/build',
                 data: { project: project_select, target: target_select, title: title },
                 success: function(data) {
                     console.log(data);

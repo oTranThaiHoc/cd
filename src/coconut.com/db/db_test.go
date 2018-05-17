@@ -33,8 +33,9 @@ func init() {
 func TestInsertNewBuild(t *testing.T) {
 	title := "TEST.Example.1234"
 	target := "NARUTO"
-	manifestUrl := "itms-services://?action=download-manifest&url=https://deploygate.localtunnel.me/payloads/NARUTO/1525918397/app.plist"
+	manifestUrl := "itms-services://?action=download-manifest&url=https://ipa.haipq.com/payloads/NARUTO/1525918397/app.plist"
+	path := ""
 
-	err := InsertNewBuild(title, target, manifestUrl)
+	err := InsertNewBuild(title, target, manifestUrl, path)
 	assert.Equal(t, err, nil)
 }
