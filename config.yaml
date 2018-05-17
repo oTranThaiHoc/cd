@@ -7,3 +7,4 @@ pg_password: cc
 
 # host
 web_endpoint: https://ipa.haipq.com
+web_port: 4000

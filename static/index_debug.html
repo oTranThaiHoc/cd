@@ -5,11 +5,6 @@
     <title>Release versions!</title>
 </head>
 <body>
-<h1>Releases</h1>
-<div id="projects-list"></div>
-
-<hr/>
-
 <h1>Add release</h1>
 <form id="request-release-form">
     <select
@@ -33,6 +28,12 @@
     <br/><br/>
 </form>
 
+<hr/>
+
+<h1>Releases</h1>
+<div id="projects-list"></div>
+
+
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script>
     function deleteBuild(title, url) {
@@ -40,7 +41,7 @@
         if (r == true) {
             $.ajax({
                 type: "POST",
-                url: 'https://192.168.5.29:4000/build/remove',
+                url: 'https://ipa.haipq.com/build/remove',
                 data: { manifest_url: url },
                 success: function(data) {
                     location.reload();
@@ -51,7 +52,7 @@
     (function() {
         var select_releases;
 
-        $.getJSON( "https://192.168.5.29:4000/list", function( data ) {
+        $.getJSON( "https://ipa.haipq.com/list", function( data ) {
             $.each( data, function( i, project_item ) {
                 $( "<div/>", {
                     "id": ("project-" + i),
@@ -76,7 +77,7 @@
             });
         });
 
-        $.getJSON("https://192.168.5.29:4000/build_configs/list", function( data ) {
+        $.getJSON("https://ipa.haipq.com/build_configs/list", function( data ) {
             select_releases = data;
             $.each( data, function( index, project_item ) {
                 $("<option/>", {
@@ -100,10 +101,11 @@
             let title = $('input[name="title"]').val();
             $.ajax({
                 type: "POST",
-                url: 'https://192.168.5.29:4000/build',
+                url: 'https://ipa.haipq.com/build',
                 data: { project: project_select, target: target_select, title: title },
                 success: function(data) {
                     console.log(data);
+                    alert('Submitted build request. Please wait a minute then reload this page!');
                 },
             });
         });

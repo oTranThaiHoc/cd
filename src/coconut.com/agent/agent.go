@@ -13,12 +13,17 @@ import (
 	"coconut.com/db"
 	"coconut.com/config"
 	"github.com/gorilla/handlers"
+	"fmt"
 )
 
 var Cmd = &cobra.Command{
 	Use:   "deploy",
 	Short: "deploy sever",
 	Run:   command,
+}
+
+func init() {
+	Cmd.PersistentFlags().String("port", "4000", "default http port 4000")
 }
 
 var faviconHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -36,6 +41,9 @@ func command(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 	db.Setup(conn)
+
+	// config
+	config.ParseFlags(cmd)
 
 	// load build options
 	projects, err := db.LoadBuildOptions()
@@ -64,8 +72,9 @@ func command(cmd *cobra.Command, args []string) {
 	r.Handle("/build/remove", h.RemoveBuildHandler).Methods("POST")
 
 	// Our application will run on port 8443. Here we declare the port and pass in our router.
-	http.ListenAndServe(":4000", handlers.LoggingHandler(os.Stdout, r))
-	//http.ListenAndServeTLS(":4000", "cert.pem", "key.pem", handlers.LoggingHandler(os.Stdout, r))
+	fmt.Printf("Start server listening on port %v\n", config.HttpPort)
+	http.ListenAndServe(":" + config.HttpPort, handlers.LoggingHandler(os.Stdout, r))
+	//http.ListenAndServeTLS(":" + config.HttpPort, "cert.pem", "key.pem", handlers.LoggingHandler(os.Stdout, r))
 }
 
 func newPgPool(cmd *cobra.Command) (pg *pgx.ConnPool, err error) {

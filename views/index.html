@@ -6,6 +6,7 @@
 </head>
 <body>
 <h1>Add release</h1>
+<h1> <? $id_name ?> </h1>
 <form id="request-release-form">
     <select
             name="projects-select"
@@ -38,7 +39,7 @@
 <script>
     function deleteBuild(title, url) {
         let r = confirm("Are you sure you want to delete " + title + "?");
-        if (r == true) {
+        if (r === true) {
             $.ajax({
                 type: "POST",
                 url: 'https://ipa.haipq.com/build/remove',

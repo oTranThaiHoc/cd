@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 	"github.com/spf13/viper"
+	"github.com/spf13/cobra"
 )
 
 type BuildOption struct {
@@ -15,6 +16,7 @@ type BuildOption struct {
 var (
 	BuildOptions []BuildOption
 	HttpEndPoint string
+	HttpPort string
 )
 
 const (
@@ -74,14 +76,12 @@ func init() {
 	prepareViper("")
 
 	HttpEndPoint = viper.GetString("web_endpoint")
+	HttpPort = viper.GetString("web_port")
+}
 
-	//config, err := ioutil.ReadFile("./config/config.json")
-	//if err == nil {
-	//	err = json.Unmarshal(config, &BuildConfigs)
-	//	if err != nil {
-	//		log.Fatal(err)
-	//	}
-	//} else {
-	//	log.Fatal(err)
-	//}
+func ParseFlags(cmd *cobra.Command) {
+	portVal := cmd.Flag("port").Value
+	if portVal != nil {
+		HttpPort = portVal.String()
+	}
 }
