@@ -14,6 +14,7 @@ import (
 	"coconut.com/config"
 	"github.com/gorilla/handlers"
 	"fmt"
+	"coconut.com/renderer"
 )
 
 var Cmd = &cobra.Command{
@@ -64,6 +65,7 @@ func command(cmd *cobra.Command, args []string) {
 
 	r.Handle("/favicon.icon", faviconHandler).Methods("GET")
 
+	r.Handle("/home", renderer.HomePageRenderHandler).Methods("GET")
 	r.Handle("/list", h.PayloadsHandler).Methods("GET")
 	r.Handle("/upload", h.UploadHandler).Methods("POST")
 	r.Handle("/event_handler", h.EventHandler).Methods("POST")
