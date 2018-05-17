@@ -58,14 +58,16 @@ func command(cmd *cobra.Command, args []string) {
 	r := mux.NewRouter()
 
 	// On the default page we will simply serve our static index page.
-	r.Handle("/", http.FileServer(http.Dir("./views/")))
+	// r.Handle("/", http.FileServer(http.Dir("./views/")))
 	// We will setup our server so we can serve static assest like images, css from the /static/{file} route
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
 	r.PathPrefix("/payloads/").Handler(http.StripPrefix("/payloads/", http.FileServer(http.Dir("./payloads/"))))
 
 	r.Handle("/favicon.icon", faviconHandler).Methods("GET")
 
+	r.Handle("/", renderer.HomePageRenderHandler).Methods("GET")
 	r.Handle("/home", renderer.HomePageRenderHandler).Methods("GET")
+	r.Handle("/about", renderer.AboutPageRenderHandler).Methods("GET")
 	r.Handle("/list", h.PayloadsHandler).Methods("GET")
 	r.Handle("/upload", h.UploadHandler).Methods("POST")
 	r.Handle("/event_handler", h.EventHandler).Methods("POST")
