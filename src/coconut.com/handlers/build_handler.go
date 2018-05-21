@@ -12,6 +12,7 @@ import (
 	"io/ioutil"
 	"os"
 	"coconut.com/db"
+	"github.com/Tomasen/realip"
 )
 
 var PayloadsHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -104,6 +105,7 @@ var BuildHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 				Cfg: cfg,
 				Target: target,
 				Title: title,
+				ClientIp: realip.FromRequest(r),
 			}
 			worker.JobQueue <- j
 			break

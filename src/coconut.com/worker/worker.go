@@ -11,10 +11,12 @@ type Job struct {
 	Cfg config.BuildOption
 	Target string
 	Title string
+	ClientIp string
 }
 
 var (
 	JobQueue = make(chan Job)
+	JobDone = make(chan Job)
 )
 
 func init() {

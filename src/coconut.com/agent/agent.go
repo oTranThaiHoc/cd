@@ -15,6 +15,8 @@ import (
 	"github.com/gorilla/handlers"
 	"fmt"
 	"coconut.com/renderer"
+	"time"
+	"coconut.com/worker"
 )
 
 var Cmd = &cobra.Command{
@@ -54,6 +56,9 @@ func command(cmd *cobra.Command, args []string) {
 	}
 	config.BuildOptions = projects
 
+	// notify build progress over socket
+	go notifyBuildProgress()
+
 	// Here we are instantiating the gorilla/mux router
 	r := mux.NewRouter()
 
@@ -68,6 +73,7 @@ func command(cmd *cobra.Command, args []string) {
 	r.Handle("/", renderer.HomePageRenderHandler).Methods("GET")
 	r.Handle("/home", renderer.HomePageRenderHandler).Methods("GET")
 	r.Handle("/about", renderer.AboutPageRenderHandler).Methods("GET")
+	r.Handle("/ws", h.SocketHandler)
 	r.Handle("/list", h.PayloadsHandler).Methods("GET")
 	r.Handle("/upload", h.UploadHandler).Methods("POST")
 	r.Handle("/event_handler", h.EventHandler).Methods("POST")
@@ -92,4 +98,18 @@ func newPgPool(cmd *cobra.Command) (pg *pgx.ConnPool, err error) {
 		return nil, err
 	}
 	return
+}
+
+func notifyBuildProgress() {
+	for {
+		select {
+		case job := <- worker.JobDone: {
+			h.NotifyJobDone(job)
+		}
+		default:
+			break
+		}
+
+		time.Sleep(5 * time.Second)
+	}
 }

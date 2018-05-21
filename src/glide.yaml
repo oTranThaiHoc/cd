@@ -1,8 +1,10 @@
 package: .
 import:
 - package: github.com/gorilla/mux
+- package: github.com/gorilla/websocket
 - package: github.com/jackc/pgx
 - package: github.com/spf13/cobra
 - package: github.com/spf13/viper
 - package: github.com/fsnotify/fsnotify
 - package: github.com/thedevsaddam/renderer
+- package: github.com/Tomasen/realip

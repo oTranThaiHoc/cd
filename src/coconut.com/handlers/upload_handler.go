@@ -54,6 +54,8 @@ var UploadHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 	// title, manifestUrl
 	err = db.InsertNewBuild(title, targetName, manifestUrl, d)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+	} else {
+		log.Printf("new build added: %v\n", title)
 	}
 })
