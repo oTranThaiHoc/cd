@@ -109,9 +109,9 @@
                         data: { project: project_select, target: target_select, title: title },
                         success: function(data) {
                             console.log(data);
-                            alert('Submitted build request. Please wait a minute then reload this page!');
                         },
                     });
+                    alert('Submitted build request. Please wait a minute then reload this page!');
                 });
 
                 $('#projects-select').change(function() {
