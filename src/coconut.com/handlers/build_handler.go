@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"fmt"
 	"coconut.com/config"
-	"coconut.com/worker"
 	"github.com/gorilla/mux"
 	"encoding/json"
 	"log"
@@ -12,17 +11,17 @@ import (
 	"io/ioutil"
 	"os"
 	"coconut.com/db"
-	"github.com/Tomasen/realip"
+	"coconut.com/worker"
 )
 
 var PayloadsHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	var payloads []payload.List
 	for _, buildOption := range config.BuildOptions {
 		for _, target := range buildOption.Targets {
-			ps, err := db.LoadPayloadList(target)
+			ps, err := db.LoadPayloadList(target.Name)
 			if err == nil {
 				p := payload.List{
-					Target:target,
+					Target:target.Name,
 					Payloads:ps,
 				}
 				payloads = append(payloads, p)
@@ -98,16 +97,32 @@ var BuildHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 	target := r.PostFormValue("target")
 	title := r.PostFormValue("title")
 
+	bundleId := ""
+	for _, p := range config.BuildOptions {
+		if p.Project == project {
+			for _, t := range p.Targets {
+				if t.Name == target {
+					bundleId = t.BundleId
+					break
+				}
+			}
+		}
+		if len(bundleId) > 0 {
+			break
+		}
+	}
+
 	for _, cfg := range config.BuildOptions {
 		if cfg.Project == project {
-			fmt.Printf("Run build on project %v, target %v, title %v\n", project, target, title)
 			j := worker.Job{
 				Cfg: cfg,
 				Target: target,
 				Title: title,
-				ClientIp: realip.FromRequest(r),
+				ClientIp: r.RemoteAddr,
+				BundleId: bundleId,
 			}
 			worker.JobQueue <- j
+			fmt.Printf("Run build on project %v, target %v, title %v, bundleid: %v, clientIp: %v\n", project, target, title, bundleId, r.RemoteAddr)
 			break
 		}
 	}

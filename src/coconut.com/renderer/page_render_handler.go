@@ -17,7 +17,11 @@ func init() {
 }
 
 var HomePageRenderHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	rnd.HTML(w, http.StatusOK, "home", config.HttpEndPoint)
+	h := map[string]interface{}{
+		"HttpEndPoint": config.HttpEndPoint,
+		"WsEndPoint":   config.WsEndPoint,
+	}
+	rnd.HTML(w, http.StatusOK, "home", h)
 })
 
 var AboutPageRenderHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

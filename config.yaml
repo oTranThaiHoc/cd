@@ -8,3 +8,7 @@ pg_password: cc
 # host
 web_endpoint: https://ipa.haipq.com
 web_port: 4000
+ws_endpoint: wss://ipa.haipq.com/ws
+
+# build script path
+script_path: /Users/nguyen.van.hung/workspace/ci/scripts/

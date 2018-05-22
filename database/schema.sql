@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS projects (
   id              SERIAL PRIMARY KEY,
   project         VARCHAR(128) NOT NULL,
-  targets         VARCHAR(128)[],
+  targets         JSON,
   path            VARCHAR(1024) NOT NULL
 );
 

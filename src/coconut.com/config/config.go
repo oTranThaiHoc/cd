@@ -6,17 +6,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type Target struct {
+	Name string `json:"name"`
+	BundleId string `json:"bundle_id"`
+}
 type BuildOption struct {
 	Id int `json:"id"`
 	Project string `json:"project"`
-	Targets []string `json:"targets"`
+	Targets []Target `json:"targets"`
 	Path string `json:"source_dir"`
 }
 
 var (
 	BuildOptions []BuildOption
 	HttpEndPoint string
+	WsEndPoint string
 	HttpPort string
+	ScriptPath string
 )
 
 const (
@@ -76,7 +82,9 @@ func init() {
 	prepareViper("")
 
 	HttpEndPoint = viper.GetString("web_endpoint")
+	WsEndPoint = viper.GetString("ws_endpoint")
 	HttpPort = viper.GetString("web_port")
+	ScriptPath = viper.GetString("script_path")
 }
 
 func ParseFlags(cmd *cobra.Command) {

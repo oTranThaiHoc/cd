@@ -4,8 +4,10 @@ import (
 	"net/http"
 	"github.com/gorilla/websocket"
 	"log"
-	"github.com/Tomasen/realip"
 	"coconut.com/worker"
+	"time"
+	"net"
+	"strings"
 )
 
 var (
@@ -14,31 +16,58 @@ var (
 )
 
 var SocketHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	clientIp := realip.FromRequest(r)
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	existingConn, ok := Conn[clientIp]
+	clientPort := r.RemoteAddr
+	// get client port
+	if strings.ContainsRune(r.RemoteAddr, ':') {
+		_, clientPort, _ = net.SplitHostPort(r.RemoteAddr)
+	}
+	existingConn, ok := Conn[clientPort]
 	if ok {
 		// existing connection, close it
 		existingConn.Close()
 	}
-	log.Printf("new connection: %v\n", clientIp)
-	serveConnection(c)
+	Conn[clientPort] = c
+	log.Printf("new connection: %v\n", r.RemoteAddr)
+	serveConnection(c, clientPort)
 })
 
 func NotifyJobDone(job worker.Job) {
-	log.Printf("notify job done: %v\n", job.Title)
-	conn, ok := Conn[job.ClientIp]
-	if !ok {
-		log.Printf("notify job done failed, client not found: %v\n", job.ClientIp)
-		return
+	log.Printf("notify job done: %v, client ip: %v\n", job.Title, job.ClientIp)
+	log.Printf("call connections: %v\n", Conn)
+	clientPort := job.ClientIp
+	// get client port
+	if strings.ContainsRune(job.ClientIp, ':') {
+		_, clientPort, _ = net.SplitHostPort(job.ClientIp)
 	}
-	conn.WriteMessage(0, []byte("reload"))
+	c, ok := Conn[clientPort]
+	if ok {
+		log.Printf("notify to client: %v\n", job.ClientIp)
+		c.WriteMessage(websocket.TextMessage, []byte("reload"))
+	} else {
+		// broadcast
+		log.Println("notify broadcast")
+		for _, c := range Conn {
+			c.WriteMessage(websocket.TextMessage, []byte("reload"))
+		}
+	}
 }
 
-func serveConnection(c *websocket.Conn) {
-
+func serveConnection(c *websocket.Conn, port string) {
+	go func() {
+		for {
+			_, _, err := c.ReadMessage()
+			if websocket.IsCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived) {
+				log.Printf("close connection: %v\n", c.RemoteAddr())
+				c.Close()
+				delete(Conn, port)
+				return
+			}
+			time.Sleep(1 * time.Second)
+		}
+	}()
 }
