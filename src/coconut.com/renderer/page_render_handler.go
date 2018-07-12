@@ -11,7 +11,7 @@ import (
 
 var rnd *renderer.Render
 const (
-	root_folder = "/Users/hung/workspaces/cd/static"
+	root_folder = "./static"
 )
 
 func init() {
