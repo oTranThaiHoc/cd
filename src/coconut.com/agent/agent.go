@@ -72,10 +72,13 @@ func command(cmd *cobra.Command, args []string) {
 
 	r.Handle("/", renderer.HomePageRenderHandler).Methods("GET")
 	r.Handle("/home", renderer.HomePageRenderHandler).Methods("GET")
+	r.Handle("/files", renderer.FilesPageRenderHandler).Methods("GET")
+	r.Handle("/files/list", renderer.FilesListingHandler).Methods("GET")
 	r.Handle("/about", renderer.AboutPageRenderHandler).Methods("GET")
 	r.Handle("/ws", h.SocketHandler)
 	r.Handle("/list", h.PayloadsHandler).Methods("GET")
 	r.Handle("/upload", h.UploadHandler).Methods("POST")
+	r.Handle("/upload_static", h.UploadPublicHandler).Methods("POST")
 	r.Handle("/event_handler", h.EventHandler).Methods("POST")
 	r.Handle("/build_configs/{key}", h.BuildConfigHandler).Methods("GET")
 	r.Handle("/build", h.BuildHandler).Methods("POST")

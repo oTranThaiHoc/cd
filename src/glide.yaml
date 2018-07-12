@@ -7,3 +7,4 @@ import:
 - package: github.com/spf13/viper
 - package: github.com/fsnotify/fsnotify
 - package: github.com/thedevsaddam/renderer
+- package: github.com/rs/zerolog

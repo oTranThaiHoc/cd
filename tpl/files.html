@@ -1,0 +1,67 @@
+{{ define "files" }}
+
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Security-Policy" content="
+                            default-src * data: blob: ws: wss: gap://ready file://*;
+                            style-src * 'unsafe-inline';
+                            script-src * 'unsafe-inline' 'unsafe-eval';
+                            connect-src * ws: wss:;">
+    <link rel="stylesheet" href="./static/css/files.css">
+
+    <style type="text/css">
+        a, a:active {text-decoration: none; color: blue;}
+        a:visited {color: #48468F;}
+        a:hover, a:focus {text-decoration: underline; color: red;}
+        body {background-color: #F5F5F5;}
+        h2 {margin-bottom: 12px;}
+        table {margin-left: 12px;}
+        th, td { font: 90% monospace; text-align: left;}
+        th { font-weight: bold; padding-right: 14px; padding-bottom: 3px;}
+        td {padding-right: 14px;}
+        td.s, th.s {text-align: right;}
+        div.list { background-color: white; border-top: 1px solid #646464; border-bottom: 1px solid #646464; padding-top: 10px; padding-bottom: 14px;}
+        div.foot { font: 90% monospace; color: #787878; padding-top: 4px;}
+    </style>
+</head>
+<html lang="en">
+  {{ template "header" }}
+
+  <body>
+
+    {{ template "navbar" }}
+
+    <div class="container">
+
+        <h1>Files</h1>
+        <form enctype="multipart/form-data" action="http://192.168.5.29:4000/upload_static" method="post">
+            <input type="file" name="uploadfile" />
+            <br>
+            <input type="submit" value="Upload" id="upload_button"/>
+        </form>
+
+        <hr/>
+
+        <h2>Index of {{.Name}}</h2>
+        
+        <div class="list">
+            <table summary="Directory Listing" cellpadding="0" cellspacing="0">
+                <thead><tr><th class="n">Name</th><th class="t">Type</th><th class="dl">Options</th></tr></thead>
+                <tbody>
+                    <tr><td class="n"><a href="../">Parent Directory</a>/</td><td class="t">Directory</td><td class="dl"></td></tr>
+                    {{range .Children_dir}}
+                    <tr><td class="n"><a href="{{.}}/">{{.}}/</a></td><td class="t">Directory</td><td class="dl"></td></tr>
+                    {{end}}
+                    {{range .Children_files}}
+                    <tr><td class="n"><a href="{{.}}">{{.}}</a></td><td class="t">&nbsp;</td><td class="dl"><a href="{{.}}?dl">Download</a></td></tr>
+                    {{end}}
+                </tbody>
+            </table>
+        </div>
+
+    </div><!-- /.container -->
+
+    {{ template "footer" }}
+  </body>
+</html>
+{{ end }}

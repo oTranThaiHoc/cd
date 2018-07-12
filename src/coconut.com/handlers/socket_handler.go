@@ -6,8 +6,6 @@ import (
 	"log"
 	"coconut.com/worker"
 	"time"
-	"net"
-	"strings"
 )
 
 var (
@@ -16,7 +14,7 @@ var (
 )
 
 var SocketHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	c, err := upgrader.Upgrade(w, r, nil)
+	/*c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 		return
@@ -33,11 +31,11 @@ var SocketHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 	}
 	Conn[clientPort] = c
 	log.Printf("new connection: %v\n", r.RemoteAddr)
-	serveConnection(c, clientPort)
+	serveConnection(c, clientPort)*/
 })
 
 func NotifyJobDone(job worker.Job) {
-	log.Printf("notify job done: %v, client ip: %v\n", job.Title, job.ClientIp)
+	/*log.Printf("notify job done: %v, client ip: %v\n", job.Title, job.ClientIp)
 	log.Printf("call connections: %v\n", Conn)
 	clientPort := job.ClientIp
 	// get client port
@@ -54,18 +52,22 @@ func NotifyJobDone(job worker.Job) {
 		for _, c := range Conn {
 			c.WriteMessage(websocket.TextMessage, []byte("reload"))
 		}
-	}
+	}*/
 }
 
 func serveConnection(c *websocket.Conn, port string) {
 	go func() {
 		for {
 			_, _, err := c.ReadMessage()
-			if websocket.IsCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived) {
+			if err != nil {
+				log.Printf("read message error: %v\n", err)
+			}
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) ||
+				websocket.IsCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived, websocket.CloseAbnormalClosure) {
 				log.Printf("close connection: %v\n", c.RemoteAddr())
 				c.Close()
 				delete(Conn, port)
-				return
+				break
 			}
 			time.Sleep(1 * time.Second)
 		}

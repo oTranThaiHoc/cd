@@ -59,3 +59,25 @@ var UploadHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 		log.Printf("new build added: %v\n", title)
 	}
 })
+
+var UploadPublicHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
+	r.ParseMultipartForm(32 << 20)
+	file, handler, err := r.FormFile("uploadfile")
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	defer file.Close()
+
+	d := "./static/"
+	utils.CreateDirIfNotExist(d)
+
+	fmt.Fprintf(w, "%v", handler.Header)
+	f, err := os.OpenFile(d + handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	defer f.Close()
+	io.Copy(f, file)
+})
