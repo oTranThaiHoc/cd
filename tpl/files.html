@@ -33,8 +33,33 @@
 
     <div class="container">
 
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready( function() {
+                $('#form_upload_file').on('submit', function(e) {
+                    e.preventDefault()
+                    console.log('submited')
+                    var fd = new FormData(document.getElementById("form_upload_file"));
+                    $.ajax({
+                        url: '{{.Server}}/upload_static',
+                        type: 'POST',
+                        data: fd,
+                        async: true,
+                        cache: false,
+                        contentType: false,
+                        enctype: 'multipart/form-data',
+                        processData: false
+                    }).done(function( data ) {
+                        console.log("Output:");
+                        console.log( data );
+                        window.location.reload();
+                    });
+                })
+            })
+        </script>
+
         <h1>Files</h1>
-        <form enctype="multipart/form-data" action="{{.Server}}/upload_static" method="post">
+        <form method="post" id="form_upload_file" name="form_upload_file">
             <input type="file" name="uploadfile" />
             <br>
             <input type="submit" value="Upload" id="upload_button"/>

@@ -60,7 +60,8 @@ var UploadHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 	}
 })
 
-var UploadPublicHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
+var UploadPublicHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	r.ParseMultipartForm(32 << 20)
 	file, handler, err := r.FormFile("uploadfile")
 	if err != nil {
