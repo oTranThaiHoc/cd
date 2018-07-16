@@ -17,7 +17,7 @@ var UploadHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 	r.ParseMultipartForm(32 << 20)
 	file, handler, err := r.FormFile("uploadfile")
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("parse uploadfile failed: %v\n", err)
 		return
 	}
 	defer file.Close()
@@ -33,7 +33,7 @@ var UploadHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 	fmt.Fprintf(w, "%v", handler.Header)
 	f, err := os.OpenFile(d + handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("write file failed: %v\n", err)
 		return
 	}
 	defer f.Close()
@@ -43,7 +43,7 @@ var UploadHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 	manifest := fmt.Sprintf(config.ManifestFormat, fmt.Sprintf("%v/payloads/%v/%v/%v", config.HttpEndPoint, targetName, now, handler.Filename), bundleId, title, title)
 	err = ioutil.WriteFile(d + "app.plist", []byte(manifest), 0666)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("write app.plist failed: %v\n", err)
 		return
 	}
 
@@ -65,10 +65,15 @@ var UploadPublicHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.R
 	r.ParseMultipartForm(32 << 20)
 	file, handler, err := r.FormFile("uploadfile")
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("parse uploadfile failed: %v\n", err)
 		return
 	}
 	defer file.Close()
+
+	if len(handler.Filename) <= 0 {
+		log.Println("empty file name")
+		return
+	}
 
 	d := "./static/"
 	utils.CreateDirIfNotExist(d)
@@ -76,7 +81,7 @@ var UploadPublicHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.R
 	fmt.Fprintf(w, "%v", handler.Header)
 	f, err := os.OpenFile(d + handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("write file failed: %v\n", err)
 		return
 	}
 	defer f.Close()
