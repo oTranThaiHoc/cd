@@ -39,7 +39,8 @@ func init() {
 				if err != nil {
 					log.Printf("Build target %v with title %v failed: %v\n", job.Target, job.Title, err)
 				} else {
-					buildDirPath := fmt.Sprintf("%v/build_%v", config.ScriptPath, job.Target)
+					target := strings.Replace(job.Target, " ", "", -1)
+					buildDirPath := fmt.Sprintf("%v/build_%v", config.ScriptPath, target)
 					contents, err := enumerateDirectory(buildDirPath)
 					if err != nil {
 						break
@@ -71,12 +72,15 @@ func enumerateDirectory(dirPath string) ([]os.FileInfo, error) {
 }
 
 func generateBuild(job Job, buildFileName string) {
+	target := strings.Replace(job.Target, " ", "", -1)
+
 	now := time.Now().Unix()
-	d := fmt.Sprintf("./payloads/%v/%v/", job.Target, now)
+	d := fmt.Sprintf("./payloads/%v/%v/", target, now)
 	utils.CreateDirIfNotExist(d)
 
 	// get build
-	buildFilePath := fmt.Sprintf("%v/build_%v/%v", config.ScriptPath, job.Target, buildFileName)
+	buildFilePath := fmt.Sprintf("%v/build_%v/%v", config.ScriptPath, target, buildFileName)
+	fmt.Printf("build file path: %v\n", buildFilePath)
 
 	// Read all content of src to data
 	r, err := os.Open(buildFilePath)
@@ -95,7 +99,7 @@ func generateBuild(job Job, buildFileName string) {
 	io.Copy(f, file)
 
 	// create app.plist
-	manifest := fmt.Sprintf(config.ManifestFormat, fmt.Sprintf("%v/payloads/%v/%v/%v", config.HttpEndPoint, job.Target, now, buildFileName), job.BundleId, job.Title, job.Title)
+	manifest := fmt.Sprintf(config.ManifestFormat, fmt.Sprintf("%v/payloads/%v/%v/%v", config.HttpEndPoint, target, now, buildFileName), job.BundleId, job.Title, job.Title)
 	err = ioutil.WriteFile(d + "app.plist", []byte(manifest), 0666)
 	if err != nil {
 		log.Println(err)
@@ -103,7 +107,7 @@ func generateBuild(job Job, buildFileName string) {
 	}
 
 	manifestUrlFormat := "itms-services://?action=download-manifest&url=%v/payloads/%v/%v/app.plist"
-	manifestUrl := fmt.Sprintf(manifestUrlFormat, config.HttpEndPoint, job.Target, now)
+	manifestUrl := fmt.Sprintf(manifestUrlFormat, config.HttpEndPoint, target, now)
 
 	// insert to db
 	// title, manifestUrl

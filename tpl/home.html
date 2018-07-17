@@ -144,8 +144,8 @@
                 $('#targets-select').html('');
                 $.each(targets, function( index, targe_item ) {
                     $( "<option/>", {
-                        "value": targe_item,
-                        html: targe_item,
+                        "value": targe_item.name,
+                        html: targe_item.name,
                     }).appendTo("#targets-select");
                 });
             });
