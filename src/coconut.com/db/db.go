@@ -22,6 +22,8 @@ const (
 	removeBuildSQL = `DELETE FROM builds WHERE manifest_url=$1;`
 
 	findBuildPathSQL = `SELECT path FROM builds WHERE manifest_url=$1;`
+
+	findBuildReleaseNoteSQL = `SELECT note FROM builds WHERE manifest_url=$1;`
 )
 
 func Setup(connPool *pgx.ConnPool) {
@@ -34,6 +36,7 @@ func PrepareStmt(conn *pgx.Conn) {
 	utils.MustPrepare(conn, "selectProjectSQL", selectProjectSQL)
 	utils.MustPrepare(conn, "removeBuildSQL", removeBuildSQL)
 	utils.MustPrepare(conn, "findBuildPathSQL", findBuildPathSQL)
+	utils.MustPrepare(conn, "findBuildReleaseNoteSQL", findBuildReleaseNoteSQL)
 }
 
 func InsertNewBuild(title string, target string, manifestUrl string, path string, note string) error {
@@ -53,6 +56,12 @@ func FindBuild(manifestUrl string) (string, error) {
 func RemoveBuild(manifestUrl string) error {
 	_, err := pool.Exec(removeBuildSQL, manifestUrl)
 	return err
+}
+
+func GetBuildReleaseNote(manifestUrl string) (string, error) {
+	var note string
+	err := pool.QueryRow(findBuildReleaseNoteSQL, manifestUrl).Scan(&note)
+	return note, err
 }
 
 func LoadBuildOptions() ([]config.BuildOption, error) {

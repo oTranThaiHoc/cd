@@ -82,6 +82,7 @@ func command(cmd *cobra.Command, args []string) {
 	r.Handle("/event_handler", h.EventHandler).Methods("POST")
 	r.Handle("/build_configs/{key}", h.BuildConfigHandler).Methods("GET")
 	r.Handle("/build", h.BuildHandler).Methods("POST")
+	r.Handle("/build/release_note", h.GetBuildReleaseNoteHandler).Methods("POST")
 	r.Handle("/build/remove", h.RemoveBuildHandler).Methods("POST")
 
 	// Our application will run on port 8443. Here we declare the port and pass in our router.

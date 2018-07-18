@@ -7,7 +7,7 @@
                             style-src * 'unsafe-inline';
                             script-src * 'unsafe-inline' 'unsafe-eval';
                             connect-src * ws: wss:;">
-    <link rel="stylesheet" href="./static/css/styles.css">
+    <link rel="stylesheet" href="./static/css/styles.css?version=1.0.0">
 </head>
 <html lang="en">
 {{ template "header" }}
@@ -72,6 +72,16 @@
                 });
             }
         }
+        function getReleaseNote(title, url) {
+            $.ajax({
+                type: "POST",
+                url: "{{.HttpEndPoint}}/build/release_note",
+                data: { manifest_url: url },
+                success: function(data) {
+                    alert(data)
+                },
+            });
+        }
         function loadPayloads() {
             hidePleaseWait();
             var myNode = document.getElementById("projects-list");
@@ -90,6 +100,7 @@
                     $.each(project_item.payloads, function(j, payload_item) {
                         let item_view = "<li id='" + j + "'>" +
                                 "<button type=\"button\" id=\"recycle_bin_button\" onclick=" + "\"deleteBuild('" + payload_item.title + "','" + payload_item.url + "')\"" + "></button>&ensp;" +
+                                "<button onclick=" + "\"getReleaseNote('" + payload_item.title + "','" + payload_item.url + "')\"" + ">Release notes</button>&ensp;" +
                                 "<a href='" + payload_item.url + "'>" + payload_item.title + "</a>" +
                                 "</li>"
                         console.debug(item_view);

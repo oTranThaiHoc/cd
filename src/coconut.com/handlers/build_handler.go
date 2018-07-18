@@ -189,3 +189,17 @@ var RemoveBuildHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Re
 		os.RemoveAll(path)
 	}
 })
+
+var GetBuildReleaseNoteHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	manifestUrl := r.PostFormValue("manifest_url")
+	note, err := db.GetBuildReleaseNote(manifestUrl)
+	if err != nil {
+		log.Printf("can not find build with manifest: %v\n", manifestUrl)
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	log.Printf("found build with manifest: %v, note: %v\n", manifestUrl, note)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(note))
+})
