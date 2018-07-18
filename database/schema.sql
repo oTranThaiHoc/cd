@@ -12,5 +12,6 @@ CREATE TABLE IF NOT EXISTS builds (
   title           VARCHAR(128) NOT NULL,
   target          VARCHAR(128) NOT NULL,
   manifest_url    VARCHAR(256) NOT NULL,
-  path            VARCHAR(1024) NOT NULL -- path to ipa directory
+  path            VARCHAR(1024) NOT NULL, -- path to ipa directory
+  note            TEXT
 );

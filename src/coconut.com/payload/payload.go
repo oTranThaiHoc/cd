@@ -2,6 +2,7 @@ package payload
 
 type Payload struct {
 	Title string `json:"title"`
+	Note string `json:"note"`
 	ManifestUrl string `json:"url"`
 }
 

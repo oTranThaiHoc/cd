@@ -13,9 +13,9 @@ var (
 )
 
 const (
-	selectBuildSQL = `SELECT title, manifest_url FROM builds WHERE target=$1;`
+	selectBuildSQL = `SELECT title, manifest_url, note FROM builds WHERE target=$1;`
 
-	addBuildSQL = `INSERT INTO builds(title, target, manifest_url, path) VALUES($1, $2, $3, $4) RETURNING id;`
+	addBuildSQL = `INSERT INTO builds(title, target, manifest_url, path, note) VALUES($1, $2, $3, $4, $5) RETURNING id;`
 
 	selectProjectSQL = `SELECT * FROM projects;`
 
@@ -36,8 +36,8 @@ func PrepareStmt(conn *pgx.Conn) {
 	utils.MustPrepare(conn, "findBuildPathSQL", findBuildPathSQL)
 }
 
-func InsertNewBuild(title string, target string, manifestUrl string, path string) error {
-	err := pool.QueryRow(addBuildSQL, title, target, manifestUrl, path).Scan(nil)
+func InsertNewBuild(title string, target string, manifestUrl string, path string, note string) error {
+	err := pool.QueryRow(addBuildSQL, title, target, manifestUrl, path, note).Scan(nil)
 	if err != nil {
 		log.Fatalf("inser new build error: %v - %v\n", title, err)
 	}
@@ -83,7 +83,7 @@ func LoadPayloadList(target string) ([]payload.Payload, error) {
 	var payloads []payload.Payload
 	for rows.Next() {
 		var p payload.Payload
-		err = rows.Scan(&p.Title, &p.ManifestUrl)
+		err = rows.Scan(&p.Title, &p.ManifestUrl, &p.Note)
 		if err == nil {
 			payloads = append(payloads, p)
 		}

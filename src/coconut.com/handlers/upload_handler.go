@@ -25,6 +25,7 @@ var UploadHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 	bundleId := r.PostFormValue("bundleid")
 	targetName := r.PostFormValue("target")
 	title := r.PostFormValue("title")
+	note := r.PostFormValue("note")
 
 	now := time.Now().Unix()
 	d := fmt.Sprintf("./payloads/%v/%v/", targetName, now)
@@ -52,7 +53,7 @@ var UploadHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 
 	// insert to db
 	// title, manifestUrl
-	err = db.InsertNewBuild(title, targetName, manifestUrl, d)
+	err = db.InsertNewBuild(title, targetName, manifestUrl, d, note)
 	if err != nil {
 		log.Println(err)
 	} else {

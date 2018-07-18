@@ -96,6 +96,9 @@ var BuildHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 	project := r.PostFormValue("project")
 	target := r.PostFormValue("target")
 	title := r.PostFormValue("title")
+	note := r.PostFormValue("note")
+
+	fmt.Printf("build command: project: %v target %v title %v note %v\n", project, target, title, note)
 
 	bundleId := ""
 	for _, p := range config.BuildOptions {
@@ -120,6 +123,7 @@ var BuildHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 				Title: title,
 				ClientIp: r.RemoteAddr,
 				BundleId: bundleId,
+				Note: note,
 			}
 			worker.JobQueue <- j
 			fmt.Printf("Run build on project %v, target %v, title %v, bundleid: %v, clientIp: %v\n", project, target, title, bundleId, r.RemoteAddr)

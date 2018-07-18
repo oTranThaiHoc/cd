@@ -21,6 +21,7 @@ type Job struct {
 	Title string
 	ClientIp string
 	BundleId string
+	Note string
 }
 
 var (
@@ -111,7 +112,7 @@ func generateBuild(job Job, buildFileName string) {
 
 	// insert to db
 	// title, manifestUrl
-	err = db.InsertNewBuild(job.Title, job.Target, manifestUrl, d)
+	err = db.InsertNewBuild(job.Title, job.Target, manifestUrl, d, job.Note)
 	if err != nil {
 		log.Println(err)
 	} else {

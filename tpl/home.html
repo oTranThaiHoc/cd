@@ -33,6 +33,10 @@
         <input type="text" name="title" placeholder="Ticket number">
         <br/><br/>
 
+        <textarea rows="4" cols="50" placeholder="Note" id="note"></textarea>
+
+        <br/><br/>
+
         <input type="submit" id="submit_button">
         <br/><br/>
     </form>
@@ -45,6 +49,10 @@
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script>
+        function showTextArea() {
+            alert(note.value)
+        }
+
         function showPleaseWait(title) {
             alert(title)
         }
@@ -123,10 +131,11 @@
                 let project_select = $('#projects-select').val();
                 let target_select = $('#targets-select').val();
                 let title = $('input[name="title"]').val();
+                let note = $('#note').val();
                 $.ajax({
                     type: "POST",
                     url: '{{.HttpEndPoint}}/build',
-                    data: { project: project_select, target: target_select, title: title },
+                    data: { project: project_select, target: target_select, title: title, note: note },
                     success: function(data) {
                         console.log(data);
                     },
