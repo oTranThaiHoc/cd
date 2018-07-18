@@ -30,7 +30,7 @@
                 id="targets-select"></select>
         <br/><br/>
 
-        <input type="text" name="title" placeholder="Ticket number">
+        <input type="text" name="title" placeholder="Title">
         <br/><br/>
 
         <textarea rows="4" cols="50" placeholder="Note" id="note"></textarea>
@@ -49,10 +49,6 @@
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script>
-        function showTextArea() {
-            alert(note.value)
-        }
-
         function showPleaseWait(title) {
             alert(title)
         }
@@ -81,6 +77,9 @@
                     alert(data)
                 },
             });
+        }
+        function isBlank(str) {
+            return (!str || /^\s*$/.test(str));
         }
         function loadPayloads() {
             hidePleaseWait();
@@ -143,6 +142,10 @@
                 let target_select = $('#targets-select').val();
                 let title = $('input[name="title"]').val();
                 let note = $('#note').val();
+                if (isBlank(title)) {
+                    alert("Please input title")
+                    return;
+                }
                 $.ajax({
                     type: "POST",
                     url: '{{.HttpEndPoint}}/build',
