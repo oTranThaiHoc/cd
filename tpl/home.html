@@ -30,7 +30,7 @@
                 id="targets-select"></select>
         <br/><br/>
 
-        <input type="text" name="title" placeholder="Ticket number">
+        <input type="text" name="title" placeholder="Title">
         <br/><br/>
 
         <textarea rows="4" cols="50" placeholder="Note" id="note"></textarea>
@@ -82,6 +82,9 @@
                 },
             });
         }
+        function isBlank(str) {
+            return (!str || /^\s*$/.test(str));
+        }
         function loadPayloads() {
             hidePleaseWait();
             var myNode = document.getElementById("projects-list");
@@ -102,7 +105,7 @@
                                 "<button type=\"button\" id=\"recycle_bin_button\" onclick=" + "\"deleteBuild('" + payload_item.title + "','" + payload_item.url + "')\"" + "></button>&ensp;" +
                                 "<button onclick=" + "\"getReleaseNote('" + payload_item.title + "','" + payload_item.url + "')\"" + ">Release notes</button>&ensp;" +
                                 "<a href='" + payload_item.url + "'>" + payload_item.title + "</a>" +
-                                "</li>"
+                                "</li><br/>"
                         console.debug(item_view);
                         payloads_list.push(item_view);
                     });
@@ -143,6 +146,10 @@
                 let target_select = $('#targets-select').val();
                 let title = $('input[name="title"]').val();
                 let note = $('#note').val();
+                if (isBlank(title)) {
+                    alert("Please input title");
+                    return;
+                }
                 $.ajax({
                     type: "POST",
                     url: '{{.HttpEndPoint}}/build',
