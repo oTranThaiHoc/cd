@@ -104,7 +104,7 @@
                     $.each(project_item.payloads, function(j, payload_item) {
                         let item_view = "<li id='" + j + "'>" +
                                 "<button type=\"button\" id=\"recycle_bin_button\" onclick=" + "\"deleteBuild('" + payload_item.title + "','" + payload_item.url + "')\"" + "></button>&ensp;" +
-                                "<button onclick=" + "\"getReleaseNote('" + payload_item.title + "','" + payload_item.url + "')\"" + ">Release notes</button>&ensp;" +
+                                "<button class=\"button\" onclick=" + "\"getReleaseNote('" + payload_item.title + "','" + payload_item.url + "')\"" + ">Release notes</button>&ensp;" +
                                 "<a href='" + payload_item.url + "'>" + payload_item.title + "</a>" +
                                 "</li><br/>"
                         console.debug(item_view);
@@ -191,17 +191,6 @@
     </script>
 
 </div><!-- /.container -->
-
-<script>
-    $(document).ready(function () {
-
-        $('#projects-list').accordion({
-            active: false,
-            collapsible: true
-        });
-
-    })
-</script>
 
 {{ template "footer" }}
 </body>
