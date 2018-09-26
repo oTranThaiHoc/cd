@@ -34,7 +34,12 @@
         <br/><br/>
 
         <textarea rows="4" cols="50" placeholder="Note" id="note"></textarea>
+        <br/><br/>
 
+        <input rows="4" cols="50" placeholder="Pull ID" id="pull_request_id"/>
+        <br/><br/>
+
+        <input rows="4" cols="50" placeholder="Version" id="build_version"/>
         <br/><br/>
 
         <input type="submit" id="submit_button">
@@ -142,6 +147,8 @@
                 let target_select = $('#targets-select').val();
                 let title = $('input[name="title"]').val();
                 let note = $('#note').val();
+                let pull_id = $('#pull_request_id').val();
+                let version = $('#build_version').val();
                 if (isBlank(title)) {
                     alert("Please input title");
                     return;
@@ -149,7 +156,7 @@
                 $.ajax({
                     type: "POST",
                     url: '{{.HttpEndPoint}}/build',
-                    data: { project: project_select, target: target_select, title: title, note: note },
+                    data: { project: project_select, target: target_select, title: title, note: note, pull_id: pull_id, version: version },
                     success: function(data) {
                         console.log(data);
                     },

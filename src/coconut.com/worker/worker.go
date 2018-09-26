@@ -22,6 +22,8 @@ type Job struct {
 	ClientIp string
 	BundleId string
 	Note string
+	Pull string
+	Version string
 }
 
 var (
@@ -35,7 +37,7 @@ func init() {
 			select {
 			case job := <- JobQueue: {
 				buildScript := fmt.Sprintf("%v/local_deploy.sh", config.ScriptPath)
-				cmd := exec.Command("/bin/sh", buildScript, job.Cfg.Path, job.Target, job.Title)
+				cmd := exec.Command("/bin/sh", buildScript, job.Cfg.Path, job.Target, job.Title, job.Pull, job.Version)
 				_, err := cmd.Output()
 				if err != nil {
 					log.Printf("Build target %v with title %v failed: %v\n", job.Target, job.Title, err)

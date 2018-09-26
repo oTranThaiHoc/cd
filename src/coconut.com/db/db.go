@@ -13,7 +13,7 @@ var (
 )
 
 const (
-	selectBuildSQL = `SELECT title, manifest_url, note FROM builds WHERE target=$1;`
+	selectBuildSQL = `SELECT title, manifest_url, note FROM builds WHERE target=$1 ORDER BY title;`
 
 	addBuildSQL = `INSERT INTO builds(title, target, manifest_url, path, note) VALUES($1, $2, $3, $4, $5) RETURNING id;`
 

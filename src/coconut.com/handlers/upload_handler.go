@@ -80,7 +80,9 @@ var UploadPublicHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.R
 	utils.CreateDirIfNotExist(d)
 
 	fmt.Fprintf(w, "%v", handler.Header)
-	f, err := os.OpenFile(d + handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+	outFileName := d + handler.Filename
+	_ = os.Remove(outFileName)
+	f, err := os.OpenFile(outFileName, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
 		log.Printf("write file failed: %v\n", err)
 		return
@@ -88,3 +90,4 @@ var UploadPublicHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.R
 	defer f.Close()
 	io.Copy(f, file)
 })
+
