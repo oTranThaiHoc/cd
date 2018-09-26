@@ -7,7 +7,8 @@
                             style-src * 'unsafe-inline';
                             script-src * 'unsafe-inline' 'unsafe-eval';
                             connect-src * ws: wss:;">
-    <link rel="stylesheet" href="./static/css/styles.css?version=1.0.0">
+    <link rel="stylesheet" href="./static/css/styles.css?version=1.0.1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <html lang="en">
 {{ template "header" }}
@@ -49,10 +50,12 @@
     <hr/>
 
     <h1>Releases</h1>
-    <div id="projects-list"></div>
+    <div id="projects-list" class="accordion"></div>
+    <br/><br/>
 
-
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src='https://code.jquery.com/jquery-3.1.1.min.js'></script>
+    <script src='https://code.jquery.com/ui/1.12.1/jquery-ui.min.js'></script>
+    <link href='https://code.jquery.com/ui/1.12.1/themes/cupertino/jquery-ui.css' rel='stylesheet'>
     <script>
         function showPleaseWait(title) {
             alert(title)
@@ -94,10 +97,7 @@
             }
             $.getJSON( "{{.HttpEndPoint}}/list", function( data ) {
                 $.each( data, function( i, project_item ) {
-                    $( "<div/>", {
-                        "id": ("project-" + i),
-                        "class": "project-item",
-                        html: ("<h4>" + project_item.target + "</h4>"),
+                    $( "<h3>" + project_item.target + "</h3>" + "<div id=\"project-" + i + "\"></div>", {
                     }).appendTo( "#projects-list" );
 
                     let payloads_list = [];
@@ -111,10 +111,13 @@
                         payloads_list.push(item_view);
                     });
 
+                    $( "<div id=\"project-list-" + i + "\"></br></div>", {
+                    }).appendTo( "#project-" + i );
+
                     $( "<ul/>", {
                         "class": "payloads-list",
                         html: payloads_list.join( "" )
-                    }).appendTo( "#project-" + i );
+                    }).appendTo( "#project-list-" + i );
                 });
             });
         }
@@ -183,6 +186,17 @@
     </script>
 
 </div><!-- /.container -->
+
+<script>
+    $(document).ready(function () {
+
+        $('#projects-list').accordion({
+            active: false,
+            collapsible: true
+        });
+
+    })
+</script>
 
 {{ template "footer" }}
 </body>
