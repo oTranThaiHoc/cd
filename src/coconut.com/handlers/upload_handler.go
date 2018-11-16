@@ -1,19 +1,20 @@
 package handlers
 
 import (
-	"net/http"
 	"fmt"
-	"os"
 	"io"
-	"time"
-	"coconut.com/utils"
 	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
+	"time"
+
 	"coconut.com/config"
 	"coconut.com/db"
-	"log"
+	"coconut.com/utils"
 )
 
-var UploadHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
+var UploadHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(32 << 20)
 	file, handler, err := r.FormFile("uploadfile")
 	if err != nil {
@@ -32,7 +33,7 @@ var UploadHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 	utils.CreateDirIfNotExist(d)
 
 	fmt.Fprintf(w, "%v", handler.Header)
-	f, err := os.OpenFile(d + handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+	f, err := os.OpenFile(d+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
 		log.Printf("write file failed: %v\n", err)
 		return
@@ -42,7 +43,7 @@ var UploadHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 
 	// create app.plist
 	manifest := fmt.Sprintf(config.ManifestFormat, fmt.Sprintf("%v/payloads/%v/%v/%v", config.HttpEndPoint, targetName, now, handler.Filename), bundleId, title, title)
-	err = ioutil.WriteFile(d + "app.plist", []byte(manifest), 0666)
+	err = ioutil.WriteFile(d+"app.plist", []byte(manifest), 0666)
 	if err != nil {
 		log.Printf("write app.plist failed: %v\n", err)
 		return
@@ -91,3 +92,11 @@ var UploadPublicHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.R
 	io.Copy(f, file)
 })
 
+var DeletePublicFileHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	fileName := r.PostFormValue("filename")
+	d := "./static/"
+	filePath := d + fileName
+	log.Printf("delete file: %v\n", filePath)
+	_ = os.Remove(filePath)
+})

@@ -1,22 +1,23 @@
 package agent
 
 import (
-	"github.com/spf13/cobra"
-	"runtime"
-	"os"
-	"github.com/jackc/pgx"
-	"log"
-	"coconut.com/config/pgconf"
-	"github.com/gorilla/mux"
-	"net/http"
-	h "coconut.com/handlers"
-	"coconut.com/db"
-	"coconut.com/config"
-	"github.com/gorilla/handlers"
 	"fmt"
-	"coconut.com/renderer"
+	"log"
+	"net/http"
+	"os"
+	"runtime"
 	"time"
+
+	"coconut.com/config"
+	"coconut.com/config/pgconf"
+	"coconut.com/db"
+	h "coconut.com/handlers"
+	"coconut.com/renderer"
 	"coconut.com/worker"
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+	"github.com/jackc/pgx"
+	"github.com/spf13/cobra"
 )
 
 var Cmd = &cobra.Command{
@@ -74,6 +75,7 @@ func command(cmd *cobra.Command, args []string) {
 	r.Handle("/home", renderer.HomePageRenderHandler).Methods("GET")
 	// r.Handle("/files", renderer.FilesPageRenderHandler).Methods("GET")
 	r.Handle("/files", renderer.FilesListingHandler).Methods("GET")
+	r.Handle("/files/remove", h.DeletePublicFileHandler).Methods("POST")
 	r.Handle("/about", renderer.AboutPageRenderHandler).Methods("GET")
 	r.Handle("/ws", h.SocketHandler)
 	r.Handle("/list", h.PayloadsHandler).Methods("GET")
@@ -87,7 +89,7 @@ func command(cmd *cobra.Command, args []string) {
 
 	// Our application will run on port 8443. Here we declare the port and pass in our router.
 	fmt.Printf("Start server listening on port %v\n", config.HttpPort)
-	http.ListenAndServe(":" + config.HttpPort, handlers.LoggingHandler(os.Stdout, r))
+	http.ListenAndServe(":"+config.HttpPort, handlers.LoggingHandler(os.Stdout, r))
 	//http.ListenAndServeTLS(":" + config.HttpPort, "cert.pem", "key.pem", handlers.LoggingHandler(os.Stdout, r))
 }
 
@@ -107,9 +109,10 @@ func newPgPool(cmd *cobra.Command) (pg *pgx.ConnPool, err error) {
 func notifyBuildProgress() {
 	for {
 		select {
-		case job := <- worker.JobDone: {
-			h.NotifyJobDone(job)
-		}
+		case job := <-worker.JobDone:
+			{
+				h.NotifyJobDone(job)
+			}
 		default:
 			break
 		}

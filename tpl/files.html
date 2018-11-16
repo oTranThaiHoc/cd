@@ -8,6 +8,7 @@
                             script-src * 'unsafe-inline' 'unsafe-eval';
                             connect-src * ws: wss:;">
     <link rel="stylesheet" href="./static/css/files-1.0.0.css">
+    <link rel="stylesheet" href="./static/css/styles-1.0.0.css">
 
     <style type="text/css">
         a, a:active {text-decoration: none; color: blue;}
@@ -33,7 +34,9 @@
 
     <div class="container">
 
-        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script src='https://code.jquery.com/jquery-3.1.1.min.js'></script>
+        <script src='https://code.jquery.com/ui/1.12.1/jquery-ui.min.js'></script>
+        <link href='https://code.jquery.com/ui/1.12.1/themes/cupertino/jquery-ui.css' rel='stylesheet'>
         <script type="text/javascript">
             $(document).ready( function() {
                 $('#form_upload_file').on('submit', function(e) {
@@ -56,6 +59,27 @@
                     });
                 })
             })
+
+            function deleteFile(url) {
+                var name;
+                let comps = url.split("/");
+                if (comps.length > 0) {
+                    name = comps[comps.length - 1];
+                }
+                if (name) {
+                    let r = confirm("Are you sure you want to delete " + name + "?");
+                    if (r === true) {
+                        $.ajax({
+                            type: "POST",
+                            url: "{{.Server}}/files/remove",
+                            data: { filename: name },
+                            success: function (data) {
+                                window.location.reload();
+                            },
+                        });
+                    }
+                }
+            }
         </script>
 
         <h1>Files</h1>
@@ -74,8 +98,8 @@
                 <tbody>
                     {{range .Children_files}}
                     <tr>
-                        <td class="n">
-                            <button type="button" id="recycle_bin_button"></button>
+                        <td class="n" height="20">
+                            <button type="button" id="recycle_bin_button" onclick="deleteFile('{{.}}')"></button>
                             <a href="{{.}}">{{.}}</a></td><td class="t">&nbsp;
                         </td>
                     </tr>
