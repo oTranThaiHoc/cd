@@ -73,7 +73,12 @@
             <table summary="Directory Listing" cellpadding="0" cellspacing="0">
                 <tbody>
                     {{range .Children_files}}
-                    <tr><td class="n"><a href="{{.}}">{{.}}</a></td><td class="t">&nbsp;</td></tr>
+                    <tr>
+                        <td class="n">
+                            <button type="button" id="recycle_bin_button"></button>
+                            <a href="{{.}}">{{.}}</a></td><td class="t">&nbsp;
+                        </td>
+                    </tr>
                     {{end}}
                 </tbody>
             </table>
